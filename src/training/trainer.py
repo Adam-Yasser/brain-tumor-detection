@@ -63,6 +63,10 @@ class Trainer:
         # Mixed precision training — saves GPU memory
         self.scaler = GradScaler("cuda")
 
+        # Disable cuDNN benchmarking for compatibility
+        torch.backends.cudnn.benchmark = False
+        torch.backends.cudnn.enabled = True
+
     def train_one_epoch(self):
         """Run one complete pass through the training data."""
         self.model.train()
