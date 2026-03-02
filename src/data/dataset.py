@@ -7,27 +7,33 @@ Uses ImageFolder format — class is determined by subfolder name.
 from pathlib import Path
 from torchvision.datasets import ImageFolder
 from torch.utils.data import DataLoader
-from src.data.transforms import get_train_transforms, get_val_transforms
+from src.data.transforms import get_train_transforms, get_strong_train_transforms, get_val_transforms
 
 
 # Maps class names to indices
 CLASS_NAMES = ["glioma", "meningioma", "notumor", "pituitary"]
 
 
-def get_datasets(data_dir="data/splits"):
+def get_datasets(data_dir="data/splits", strong_augmentation=False):
     """
     Load train, validation, and test datasets.
 
     Args:
         data_dir: Path to the splits directory
+        strong_augmentation: If True, use stronger training augmentation
 
     Returns:
         Dictionary with 'train', 'val', and 'test' datasets
     """
     data_dir = Path(data_dir)
 
+    if strong_augmentation:
+        train_transform = get_strong_train_transforms()
+    else:
+        train_transform = get_train_transforms()
+
     datasets = {
-        "train": ImageFolder(data_dir / "train", transform=get_train_transforms()),
+        "train": ImageFolder(data_dir / "train", transform=train_transform),
         "val": ImageFolder(data_dir / "val", transform=get_val_transforms()),
         "test": ImageFolder(data_dir / "test", transform=get_val_transforms()),
     }
@@ -42,7 +48,7 @@ def get_datasets(data_dir="data/splits"):
     return datasets
 
 
-def get_dataloaders(data_dir="data/splits", batch_size=16, num_workers=2):
+def get_dataloaders(data_dir="data/splits", batch_size=16, num_workers=2, strong_augmentation=False):
     """
     Create DataLoaders for train, validation, and test sets.
 
@@ -50,24 +56,25 @@ def get_dataloaders(data_dir="data/splits", batch_size=16, num_workers=2):
         data_dir:    Path to the splits directory
         batch_size:  Number of images per batch
         num_workers: Number of parallel data loading processes
+        strong_augmentation: If True, use stronger training augmentation
 
     Returns:
         Dictionary with 'train', 'val', and 'test' DataLoaders
     """
-    datasets = get_datasets(data_dir)
+    datasets = get_datasets(data_dir, strong_augmentation=strong_augmentation)
 
     loaders = {
         "train": DataLoader(
             datasets["train"],
             batch_size=batch_size,
-            shuffle=True,        # Randomize order each epoch
+            shuffle=True,
             num_workers=num_workers,
-            pin_memory=True,     # Faster GPU transfer
+            pin_memory=True,
         ),
         "val": DataLoader(
             datasets["val"],
             batch_size=batch_size,
-            shuffle=False,       # No need to shuffle validation
+            shuffle=False,
             num_workers=num_workers,
             pin_memory=True,
         ),

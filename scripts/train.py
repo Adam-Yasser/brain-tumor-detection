@@ -74,10 +74,12 @@ def train(config_path="configs/default.yaml"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Data
+    strong_aug = config["data"].get("strong_augmentation", False)
     loaders = get_dataloaders(
         data_dir=config["data"]["data_dir"],
         batch_size=config["data"]["batch_size"],
         num_workers=config["data"]["num_workers"],
+        strong_augmentation=strong_aug,
     )
 
     # Model
