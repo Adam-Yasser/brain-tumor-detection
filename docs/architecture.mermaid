@@ -1,0 +1,28 @@
+graph TB
+    subgraph INPUT["📁 Input"]
+        A[MRI Brain Scan Image<br/>JPG/PNG, any size]
+    end
+
+    subgraph PREPROCESSING["⚙️ Preprocessing Pipeline"]
+        B[Convert to RGB]
+        C[Resize to 224×224]
+        D[Normalize<br/>ImageNet mean/std]
+        E[Data Augmentation<br/>rotation, flip, crop<br/>training only]
+    end
+
+    subgraph MODEL["🧠 Model — EfficientNet-B0"]
+        F[Pretrained Backbone<br/>Feature Extraction<br/>5.3M parameters]
+        G[Custom Classification Head<br/>Flatten → Dropout → Linear 1280→256<br/>→ ReLU → Dropout → Linear 256→4]
+    end
+
+    subgraph OUTPUT["📊 Output"]
+        H[Class Probabilities<br/>glioma: 0.954<br/>meningioma: 0.030<br/>notumor: 0.010<br/>pituitary: 0.006]
+        I[Prediction<br/>glioma — 95.4% confidence]
+    end
+
+    A --> B --> C --> D --> E --> F --> G --> H --> I
+
+    style INPUT fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style PREPROCESSING fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    style MODEL fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style OUTPUT fill:#fce4ec,stroke:#c62828,stroke-width:2px
