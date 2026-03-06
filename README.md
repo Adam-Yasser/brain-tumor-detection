@@ -156,7 +156,7 @@ brain-tumor-detection/
 
 ### Prerequisites
 
-- Python 3.11 or 3.12
+- Python 3.11 or 3.12 (3.13+ is NOT supported by PyTorch yet)
 - NVIDIA GPU recommended (works on CPU too, just slower)
 
 ### Installation
@@ -172,8 +172,20 @@ python -m venv venv
 # Activate (Windows PowerShell)
 .\venv\Scripts\Activate.ps1
 
-# Install dependencies
+# Step 1: Install PyTorch for YOUR machine
+# Visit https://pytorch.org/get-started/locally/ and select your setup
+# OR use one of these:
+
+# GPU (NVIDIA with CUDA 12.4):
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+
+# CPU only (no GPU):
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+# Step 2: Install remaining dependencies
 pip install -r requirements.txt
+
+# Step 3: Install project package
 pip install -e .
 ```
 
