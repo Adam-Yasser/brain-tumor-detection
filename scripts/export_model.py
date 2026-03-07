@@ -56,6 +56,7 @@ def export_model(model_path="outputs/models/efficientnet_b0.pth"):
         "classes": ["glioma", "meningioma", "notumor", "pituitary"],
         "input_size": 224,
         "input_channels": 3,
+        
         "test_accuracy": 0.9475,
         "val_accuracy": round(checkpoint["val_accuracy"], 4),
         "normalization": {
@@ -186,7 +187,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         type=str,
-        default="outputs/models/efficientnet_b0.pth",
+        default="outputs/models/best_model.pth",,
         help="Path to model checkpoint",
     )
     args = parser.parse_args()
