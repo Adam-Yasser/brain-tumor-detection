@@ -13,10 +13,12 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import mlflow
+from pathlib import Path
 
 from src.models.classifier import BrainTumorClassifier
 from src.data.dataset import get_dataloaders
 from src.training.trainer import Trainer
+
 
 
 def set_seed(seed):
@@ -66,6 +68,11 @@ def train(config_path="configs/default.yaml"):
     # Load config
     with open(config_path) as f:
         config = yaml.safe_load(f)
+
+    # Create output directories if they don't exist
+    Path(config["paths"]["model_dir"]).mkdir(parents=True, exist_ok=True)
+    Path(config["paths"]["log_dir"]).mkdir(parents=True, exist_ok=True)
+    Path(config["paths"]["figure_dir"]).mkdir(parents=True, exist_ok=True)
 
     # Set seed
     set_seed(config["experiment"]["seed"])
