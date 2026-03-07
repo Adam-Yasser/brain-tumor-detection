@@ -9,6 +9,7 @@ Usage:
 import argparse
 import yaml
 import torch
+from pathlib import Path
 
 from src.models.classifier import BrainTumorClassifier
 from src.data.dataset import get_datasets, get_dataloaders
@@ -24,6 +25,9 @@ from src.evaluation.metrics import (
 
 def evaluate(model_path="outputs/models/best_model.pth"):
     """Load best model and evaluate on test set."""
+
+    # Create output directories if they don't exist
+    Path("outputs/figures").mkdir(parents=True, exist_ok=True)
 
     # Device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
