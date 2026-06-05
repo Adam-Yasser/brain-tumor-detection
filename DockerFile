@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+WORKDIR /app
+RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir huggingface_hub
+COPY setup.py .
+COPY src/ src/
+RUN pip install -e .
+COPY . .
+RUN python -c "from huggingface_hub import hf_hub_download; import os; os.makedirs("outputs/deployment", exist_ok=True); hf_hub_download(repo_id="Adam-Yasser/brain-tumor-model", filename="brain_tumor_model.pth", local_dir="outputs/deployment")"
+EXPOSE 7860
+ENV MODEL_PATH=outputs/deployment/brain_tumor_model.pth
+CMD ["python", "scripts/run_api.py", "--host", "0.0.0.0", "--port", "7860"]
